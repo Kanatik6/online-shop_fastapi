@@ -2,9 +2,7 @@ from fastapi import HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
-from decouple import config
 from users.auth.jwt_handler import singJWT
-import time
 
 from users import models,schemas
 

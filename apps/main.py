@@ -2,12 +2,15 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from database import engine,Base
 from users.auth.jwt_bearer import JWTBearer
+from products.routers import get_products 
 
 from users import schemas,models,crud
 
-
 Base.metadata.create_all(bind=engine)
 app = FastAPI(title="Shop")
+
+
+# app.include_router(router=product_router)
 
 def get_db():
     db = Session(bind=engine)
