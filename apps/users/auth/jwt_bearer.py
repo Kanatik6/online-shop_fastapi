@@ -1,7 +1,15 @@
 from fastapi import Request,HTTPException
 from fastapi.security import HTTPBearer,HTTPAuthorizationCredentials
+from fastapi import Depends
 
+from decouple import config
 from .jwt_handler import decodeJWT
+import jwt
+
+
+JWT_SECRET = config('secret')
+JWT_ALGORITHM = config('algorithm')
+
 
 class JWTBearer(HTTPBearer):
     def __init__(self,auto_error:bool=True):
@@ -24,3 +32,10 @@ class JWTBearer(HTTPBearer):
         except:
             payload = None
         return bool(payload)
+
+
+async def get_current_user(token: str = Depends(JWTBearer())) -> dict:
+    payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM], verify_signature=False) 
+    return {
+        "userID": payload.get("userID")
+    }
