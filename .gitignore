@@ -2,3 +2,4 @@
 tz.txt
 env
 .vscode
+__pycache__
