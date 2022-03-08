@@ -1,27 +1,30 @@
-import time 
+import time
 import jwt
 from decouple import config
 
 JWT_SECRET = config('secret')
 JWT_ALGORITHM = config('algorithm')
 
-def token_response(token:str):
-    return {"access token":token}
 
-def singJWT(userID:str):
+def token_response(token: str):
+    return {"access token": token}
+
+
+def singJWT(userID: str):
     payload = {
-        "userID":userID,
-        "expiry":time.time()+6000
+        "userID": userID,
+        "expiry": time.time()+6000
     }
-    token = jwt.encode(payload,JWT_SECRET,JWT_ALGORITHM)
+    token = jwt.encode(payload, JWT_SECRET, JWT_ALGORITHM)
     return token_response(token)
 
-def decodeJWT(token:str):
+
+def decodeJWT(token: str):
     try:
-        decode_token = jwt.decode(token,JWT_SECRET,JWT_ALGORITHM)
+        decode_token = jwt.decode(token, JWT_SECRET, JWT_ALGORITHM)
         if decode_token.get('expiry') >= time.time():
             decode_token['expiry'] = time.time() + 9000
             return decode_token
-        return  None
+        return None
     except Exception:
         return None

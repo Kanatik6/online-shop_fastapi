@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 
+
 class CartProduct(BaseModel):
     amount_products: int = 0
 
@@ -12,7 +13,7 @@ class Product(BaseModel):
     descriptions: str = Field(..., min_length=10)
     price: int = Field(..., gt=0)
     amount: int = Field(..., gt=0)
-    cart_products: list[CartProduct] |None = None
+    cart_products: list[CartProduct] | None = None
 
     class Config:
         orm_mode = True
@@ -47,8 +48,6 @@ class ReturnCart(BaseModel):
         orm_mode = True
 
 
-class AddProduct(BaseModel):
+class SetProduct(BaseModel):
     id: int
     amount: int
-    
-    
