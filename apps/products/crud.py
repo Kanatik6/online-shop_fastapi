@@ -64,9 +64,8 @@ def delete_product(db: Session, id: int):
 
 
 def create_cart(db: Session, id: int):
-    user = exist(db.query(User).filter_by(id=id))
-
-    cart = models.Cart(user_id=user.id)
+    user = exist(db.query(User.id).filter_by(id=id))
+    cart = models.Cart(user_id=user[0])
 
     db.add(cart)
     db.commit()

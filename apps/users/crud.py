@@ -11,7 +11,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def create_user(db: Session, user: schemas.User):
     # if first_name is exist, raise exception
-    if db.query(models.User).filter_by(first_name=user.first_name).first() != None:
+    if db.query(models.User.id).filter_by(first_name=user.first_name).first() != None:
         raise HTTPException(
             status_code=400, detail='first_name must be unique, try again')
     user = models.User(first_name=user.first_name,
@@ -24,15 +24,16 @@ def create_user(db: Session, user: schemas.User):
 
 
 def login_user(db: Session, user: schemas.UserLogin):
-    db_user = db.query(models.User).filter_by(
-        first_name=user.first_name).first()
+    db_user = db.query(models.User.id,models.User.hashed_password).filter(
+        models.User.first_name==user.first_name).first()
+    print(db_user)
     if not db_user:
         raise HTTPException(status_code=401, detail='user not found')
 
-    if not pwd_context.verify(user.password, db_user.hashed_password):
+    if not pwd_context.verify(user.password, db_user[1]):
         raise HTTPException(status_code=401, detail='wrong password')
 
-    token = singJWT(db_user.id)
+    token = singJWT(db_user[0])
     return token
 
 
