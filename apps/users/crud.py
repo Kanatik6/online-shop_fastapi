@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from users.auth.jwt_handler import singJWT
+from auth.jwt_handler import decodeJWT,get_payload_jwt
 
 from users import models, schemas
 
@@ -33,7 +34,17 @@ def login_user(db: Session, user: schemas.UserLogin):
     if not pwd_context.verify(user.password, db_user[1]):
         raise HTTPException(status_code=401, detail='wrong password')
 
-    token = singJWT(db_user[0])
+    tokens = singJWT(db_user[0])
+    return tokens
+
+
+def login_refresh_user(token:str):
+    if not decodeJWT(token):
+        raise HTTPException(status_code=400,detail='token invalid or expired')
+    payload = get_payload_jwt(token)
+    if payload.get('type') != 'refresh':
+        raise HTTPException(status_code=400,detail='need refresh token')
+    token = singJWT(payload.get('id'),type='refresh')
     return token
 
 

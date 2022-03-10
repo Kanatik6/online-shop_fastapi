@@ -22,3 +22,6 @@ JWT_ALGORITHM = config('algorithm')
 
 app.include_router(router=router_product)
 app.include_router(router=router_user)
+
+# import secrets
+# secrets.token_hex(20)
