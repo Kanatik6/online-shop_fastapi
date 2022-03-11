@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from users.auth.jwt_handler import singJWT
-from auth.jwt_handler import decodeJWT,get_payload_jwt
+from .auth.jwt_handler import decodeJWT,get_payload_jwt
 
 from users import models, schemas
 
