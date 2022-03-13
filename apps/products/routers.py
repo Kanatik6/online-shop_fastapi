@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends
 from users.auth.jwt_bearer import get_current_user
 from users.auth.jwt_bearer import JWTBearer
+from users.auth.permissions import test_permission
 
 from database import get_db
 from products import schemas, crud
@@ -14,7 +15,7 @@ async def get_products(db: Session = Depends(get_db)):
     return crud.get_products(db=db)
 
 
-@router.get('/{id}/', response_model=schemas.ReturnProduct, tags=['products'])
+@router.get('/{id}/', response_model=schemas.ReturnProduct, tags=['products'],dependencies=[Depends(test_permission)])
 async def get_product(*, db: Session = Depends(get_db), id: int):
     return crud.get_product(db=db, id=id)
 
