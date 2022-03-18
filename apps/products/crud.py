@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
+from products.models import Product
 from users.models import User
 
 from products import schemas, models
@@ -139,6 +140,16 @@ def remove_all_products(db: Session, cart_id):
 
     db.commit()
     return JSONResponse({'message': 'purchase is completed, please wait, our manager will contact you'})
+
+
+def product_filter(db:Session,dict_filter:dict):
+    db_products = db.query(Product).filter(
+                               Product.price>dict_filter['price_from'],
+                               Product.price<dict_filter['price_to'],
+                               Product.amount>dict_filter['amount_from'],
+                               Product.amount<dict_filter['amount_to']
+                               )
+    return db_query.all()
 
 
 def get_cart(db: Session, id: int):

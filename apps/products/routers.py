@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from users.auth.jwt_bearer import get_current_user
 from users.auth.jwt_bearer import JWTBearer
 from users.auth.permissions import test_permission
@@ -9,6 +9,16 @@ from products import schemas, crud
 
 router = APIRouter(prefix='/products')
 
+async def query_params(price_from:int = Query(default=1,gt=0),
+                       price_to:int = Query(default=1000000),
+                       amount_from:int = Query(default=1,gt=0),
+                       amount_to:int = Query(default=100000,gt=1)):
+    return {'price_from':price_from,
+            'price_to':price_to,
+            'amount_from':amount_from,
+            'amount_to':amount_to
+            }
+    
 
 @router.get('/', response_model=list[schemas.ReturnProduct], tags=['products'])
 async def get_products(db: Session = Depends(get_db)):
@@ -18,6 +28,12 @@ async def get_products(db: Session = Depends(get_db)):
 @router.get('/{id}/', response_model=schemas.ReturnProduct, tags=['products'],dependencies=[Depends(test_permission)])
 async def get_product(*, db: Session = Depends(get_db), id: int):
     return crud.get_product(db=db, id=id)
+
+
+@router.get('/{id}/filter', response_model=list[schemas.ReturnProduct], tags=['products'])
+async def get_product(*, db: Session = Depends(get_db),
+                      filter_params = Depends(query_params)):
+    return crud.product_filter(db=db,dict_filter=filter_params)
 
 
 @router.post('/',dependencies=[Depends(JWTBearer())], response_model=schemas.ReturnProduct, tags=['products'])

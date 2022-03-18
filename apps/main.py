@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from database import engine, Base
 from decouple import config
 from products.routers import router as router_product
-
 from users.routers import router as router_user
 
 

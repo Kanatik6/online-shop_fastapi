@@ -21,4 +21,3 @@ def test_permission(*,token: str = Depends(JWTBearer()),db:Session = Depends(get
     product = db.query(Product).filter_by(id=id).first()
     if product not in cart.products:
         raise HTTPException(status_code=403,detail='not permitted')
-    
