@@ -149,7 +149,7 @@ def product_filter(db:Session,dict_filter:dict):
                                Product.amount>dict_filter['amount_from'],
                                Product.amount<dict_filter['amount_to']
                                )
-    return db_query.all()
+    return db_products.all()
 
 
 def get_cart(db: Session, id: int):
